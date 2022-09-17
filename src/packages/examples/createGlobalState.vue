@@ -11,16 +11,15 @@
         <button @click="state.setName">改变名字</button>
         <pre lang="yaml">{{state.name}}-{{state.age}}-计算年龄：{{state.newAge}}</pre>
         <!-- 结合缓存处理 -->
-        <!-- <input type="text" v-model="state.orage" />
-        <input type="text" />
-        <input type="text" /> -->
+        <input type="text" v-model="stateStorage.name" />
+        <input type="text" v-model="stateStorage.age" />
     </div>
 </template>
 
 <script setup lang="ts">
 import type { Ref, ComputedRef } from 'vue'
 import { computed, reactive, toRefs } from 'vue';
-import { createGlobalState } from '../core';
+import { createGlobalState, useStorage } from '../core';
 interface ReturnInfo {
     age: Ref<number>;
     name: Ref<string>;
@@ -48,23 +47,10 @@ const useState = createGlobalState<ReturnInfo>(() => {
 })
 const state = useState();
 const useStateStorage = createGlobalState(() => {
-    // state
-    const info = reactive({
-        name: '张三',
-        age: 20,
-
+    return useStorage('local-info', {
+        'name': '李四',
+        age: 20
     })
-    // getters
-    const newAge = computed(() => info.age + 10);
-
-    const setName = () => {
-        info.name = '李四'
-    }
-    return {
-        ...toRefs(info),
-        newAge,
-        setName
-    }
 })
 const stateStorage = useStateStorage();
 
