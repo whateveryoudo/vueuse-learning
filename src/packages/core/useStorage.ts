@@ -3,7 +3,7 @@
  * @Autor: ykx
  * @Date: 2022-09-18 01:11:18
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-18 03:05:18
+ * @LastEditTime: 2022-09-18 23:49:44
  */
 import { MaybeComputedRef, RemovableRef } from './utils'
 import { ref, shallowRef } from 'vue-demi'
@@ -13,6 +13,7 @@ import { resloveUnref } from './resloveUnref'
 interface UseStorageOptions<T> {
   shallow?: boolean
   window?: Window
+  listenToStorageChanges?: boolean
   onError?: (error: unknown) => void
 }
 
@@ -28,6 +29,7 @@ export function useStorage<
   const {
     shallow,
     window = defaultWindow,
+    listenToStorageChanges = true,
     onError = e => {
       console.error(e)
     }
@@ -45,6 +47,9 @@ export function useStorage<
     return data
   }
   const rawInit: T = resloveUnref(defaults)
+  if (window && listenToStorageChanges) {
+    useEventListener(window, 'storage', update);
+  }
   function read () {
     try {
       const rawValue = storage!.getItem(key)
@@ -54,7 +59,7 @@ export function useStorage<
           return rawInit
         }
       }
-      return rawValue
+      return rawValue ? JSON.parse(rawValue) : null;
     } catch (error) {
       onError(error)
     }

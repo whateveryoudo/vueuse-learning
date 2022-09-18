@@ -32,6 +32,6 @@ export function getSSRHandler<T extends keyof SSRHandlersMap>(key: T, fallback?:
   return handlers[key] as SSRHandlersMap[T] || fallback
 }
 
-export function setSSRHandler<T extends keyof SSRHandlersMap>(key: T, fn: SSRHandlersMap[T]) {
-  handlers[key] = fn
-}
+// export function setSSRHandler<T extends keyof SSRHandlersMap>(key: T, fn: SSRHandlersMap[T]) {
+//   handlers[key] = fn
+// }
